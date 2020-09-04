@@ -56,7 +56,8 @@ const getWeather = (latLongAddress, callback) => {
             console.log("Unable to find location")
         } else {
             callback(undefined, {
-                overcast: response.body.current.weather_descriptions[0],
+                location:response.body.location.name,
+                overcast: response.body.current.weather_descriptions[0].toLowerCase(),
                 temperature: response.body.current.temperature,
                 feelsLike: response.body.current.feelslike
             })
