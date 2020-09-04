@@ -1,6 +1,6 @@
 const request = require('request')
 
-
+// const url ='http://api.weatherstack.com/current?access_key=b42e0cd596e27ea3bfc193a814187784&query=37.8267,%20- 122.4233'
 // request({url: url, json: true}, (error, response) => {
 //     if (error) {
 //         console.log('Unable to connect to weather service')
@@ -38,13 +38,34 @@ const geoCode = (address, callback) => {
             callback('Unable to find location. Try another Search', undefined)
         } else {
             callback(undefined, {
-                latitude:response.body.features[0].geometry.coordinates[0],
-                longitude:response.body.features[0].geometry.coordinates[1],
-                location:response.body.features[0].text
+                latitude: response.body.features[0].geometry.coordinates[0],
+                longitude: response.body.features[0].geometry.coordinates[1],
+                location: response.body.features[0].text
             })
         }
     })
 
 }
-module.exports = geoCode
+const getWeather = (latLongAddress, callback) => {
+
+    const url = 'http://api.weatherstack.com/current?access_key=b42e0cd596e27ea3bfc193a814187784&query=' + latLongAddress.longitude + ', ' + latLongAddress.latitude
+    request({url: url, json: true}, (error, response) => {
+        if (error) {
+            callback("Unable to connect to weather service!", undefined)
+        } else if (response.body.error) {
+            console.log("Unable to find location")
+        } else {
+            callback(undefined, {
+                overcast: response.body.current.weather_descriptions[0],
+                temperature: response.body.current.temperature,
+                feelsLike: response.body.current.feelslike
+            })
+        }
+    })
+}
+module.exports = {
+    getWeather:getWeather,
+    geoCode:geoCode
+}
+
 
